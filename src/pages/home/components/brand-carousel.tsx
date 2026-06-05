@@ -4,18 +4,21 @@ import { Link } from "react-router-dom"
 
 import { Button } from "@/components/ui/button"
 import { brandLogos, brands, brandToSlug } from "@/data/vehicles"
+import { useMediaQuery } from "@/hooks/use-media-query"
 
 export function BrandCarousel() {
-  const brandsPerPage = 4
+  const isMobile = useMediaQuery("(max-width: 639px)")
+  const brandsPerPage = isMobile ? 1 : 4
   const brandPageCount = Math.ceil(brands.length / brandsPerPage)
   const [brandPage, setBrandPage] = React.useState(0)
+  const safeBrandPage = Math.min(brandPage, brandPageCount - 1)
   const visibleBrands = React.useMemo(
     () =>
       brands.slice(
-        brandPage * brandsPerPage,
-        brandPage * brandsPerPage + brandsPerPage
+        safeBrandPage * brandsPerPage,
+        safeBrandPage * brandsPerPage + brandsPerPage
       ),
-    [brandPage]
+    [brandsPerPage, safeBrandPage]
   )
 
   const showPreviousBrands = () => {
@@ -61,7 +64,7 @@ export function BrandCarousel() {
               key={index}
               className={[
                 "size-2 border border-foreground/30",
-                index === brandPage ? "bg-foreground" : "bg-transparent",
+                index === safeBrandPage ? "bg-foreground" : "bg-transparent",
               ].join(" ")}
               onClick={() => setBrandPage(index)}
               type="button"

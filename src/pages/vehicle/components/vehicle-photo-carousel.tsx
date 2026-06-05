@@ -2,6 +2,7 @@ import * as React from "react"
 import { ChevronLeft, ChevronRight, X } from "lucide-react"
 
 import { type Vehicle } from "@/data/vehicles"
+import { useMediaQuery } from "@/hooks/use-media-query"
 
 const extraGalleryImages = [
   "https://images.unsplash.com/photo-1493238792000-8113da705763?auto=format&fit=crop&w=1600&q=90",
@@ -14,6 +15,7 @@ export function VehiclePhotoCarousel({ vehicle }: { vehicle: Vehicle }) {
   const [slideIndex, setSlideIndex] = React.useState(0)
   const [modalIndex, setModalIndex] = React.useState(0)
   const [modalOpen, setModalOpen] = React.useState(false)
+  const isMobile = useMediaQuery("(max-width: 639px)")
   const images = React.useMemo(
     () => [
       ...(vehicle.images.length > 0 ? vehicle.images : [vehicle.image]),
@@ -21,8 +23,9 @@ export function VehiclePhotoCarousel({ vehicle }: { vehicle: Vehicle }) {
     ],
     [vehicle.image, vehicle.images]
   )
-  const visibleItems = 3
+  const visibleItems = isMobile ? 1 : 3
   const maxSlideIndex = Math.max(0, images.length - visibleItems)
+  const safeSlideIndex = Math.min(slideIndex, maxSlideIndex)
 
   const showNextSlide = () => {
     setSlideIndex((current) => (current >= maxSlideIndex ? 0 : current + 1))
@@ -64,13 +67,13 @@ export function VehiclePhotoCarousel({ vehicle }: { vehicle: Vehicle }) {
         <div
           className="flex h-full transition-transform duration-700 ease-out"
           style={{
-            transform: `translateX(-${slideIndex * (100 / visibleItems)}%)`,
+            transform: `translateX(-${safeSlideIndex * (100 / visibleItems)}%)`,
           }}
         >
           {images.map((image, index) => (
             <button
               key={image}
-              className="h-full w-1/3 shrink-0 p-1.5 sm:p-3"
+              className="h-full w-full shrink-0 p-1.5 sm:w-1/3 sm:p-3"
               onClick={() => {
                 setModalIndex(index)
                 setModalOpen(true)
