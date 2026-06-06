@@ -8,10 +8,6 @@ export function ContactForm() {
   return (
     <form className="border bg-background p-5 sm:p-8">
       <h2 className="text-2xl font-semibold tracking-tight">Enviar proposta</h2>
-      <p className="mt-2 text-sm text-muted-foreground">
-        Os dados ainda sao mockados, mas a interface ja esta pronta para
-        integrar com CRM ou WhatsApp.
-      </p>
       <Separator className="my-6" />
       <div className="grid gap-5">
         <label className="grid gap-2">
